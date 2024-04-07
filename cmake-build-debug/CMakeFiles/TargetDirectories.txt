@@ -1,0 +1,5 @@
+C:/Users/fox/Documents/CamCapture/cmake-build-debug/CMakeFiles/CamCapture.dir
+C:/Users/fox/Documents/CamCapture/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/fox/Documents/CamCapture/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/fox/Documents/CamCapture/cmake-build-debug/CMakeFiles/CamCapture_autogen_timestamp_deps.dir
+C:/Users/fox/Documents/CamCapture/cmake-build-debug/CMakeFiles/CamCapture_autogen.dir
