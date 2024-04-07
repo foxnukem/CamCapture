@@ -1,5 +1,0 @@
-C:/Users/fox/Documents/CamCapture/build/Desktop_x86_windows_msvc2022_pe_64bit-Debug/CMakeFiles/CamCapture.dir
-C:/Users/fox/Documents/CamCapture/build/Desktop_x86_windows_msvc2022_pe_64bit-Debug/CMakeFiles/edit_cache.dir
-C:/Users/fox/Documents/CamCapture/build/Desktop_x86_windows_msvc2022_pe_64bit-Debug/CMakeFiles/rebuild_cache.dir
-C:/Users/fox/Documents/CamCapture/build/Desktop_x86_windows_msvc2022_pe_64bit-Debug/CMakeFiles/CamCapture_autogen_timestamp_deps.dir
-C:/Users/fox/Documents/CamCapture/build/Desktop_x86_windows_msvc2022_pe_64bit-Debug/CMakeFiles/CamCapture_autogen.dir
