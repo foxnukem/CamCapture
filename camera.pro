@@ -1,33 +1,22 @@
 TEMPLATE = app
-TARGET = camera
+TARGET = CamCapture
 
 QT += multimedia multimediawidgets
 
 HEADERS = \
     camera.h \
-    imagesettings.h \
-    videosettings.h \
+    settings.h \
     metadatadialog.h
 
 SOURCES = \
     main.cpp \
     camera.cpp \
-    imagesettings.cpp \
-    videosettings.cpp \
+    settings.cpp \
     metadatadialog.cpp
 
 FORMS += \
-    imagesettings.ui
+    settings.ui
 
-android|ios {
-    FORMS += \
-        camera_mobile.ui \
-        videosettings_mobile.ui
-} else {
-    FORMS += \
-        camera.ui \
-        videosettings.ui
-}
 RESOURCES += camera.qrc
 
 target.path = $$[QT_INSTALL_EXAMPLES]/multimedia/camera
@@ -35,6 +24,3 @@ INSTALLS += target
 
 QT += widgets
 include(../../multimedia/shared/shared.pri)
-
-ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
-OTHER_FILES += android/AndroidManifest.xml

@@ -46,8 +46,6 @@ private slots:
     void displayCaptureError(int, QImageCapture::Error, const QString &errorString);
 
     void configureCaptureSettings();
-    void configureVideoSettings();
-    void configureImageSettings();
 
     void displayRecorderError();
     void displayCameraError();
@@ -55,7 +53,6 @@ private slots:
     void updateCameraDevice(QAction *action);
 
     void updateCameraActive(bool active);
-    void updateCaptureMode();
     void updateRecorderState(QMediaRecorder::RecorderState state);
     void setExposureCompensation(int index);
 

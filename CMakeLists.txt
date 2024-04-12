@@ -4,14 +4,15 @@ project(CamCapture LANGUAGES CXX)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(CMAKE_PREFIX_PATH "C:/Qt/6.5.3/msvc2019_64")
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Multimedia MultimediaWidgets Widgets)
 
 qt_add_executable(CamCapture
     MANUAL_FINALIZATION
     camera.cpp camera.h camera.ui
-    imagesettings.cpp imagesettings.h imagesettings.ui
+
     main.cpp
-    videosettings.cpp videosettings.h videosettings.ui
+    settings.cpp settings.h settings.ui
     metadatadialog.cpp metadatadialog.h
     .gitignore
 )
