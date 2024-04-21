@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Camera</class>
- <widget class="QMainWindow" name="Camera">
+ <class>CameraCapture</class>
+ <widget class="QMainWindow" name="CameraCapture">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,9 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Camera</string>
+   <string>CamCapture</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="widgetMain">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QGroupBox" name="groupBoxMainActionButtons">
@@ -46,8 +46,9 @@
           <string>Знімок</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/images/shutter.svg</normaloff>:/images/shutter.svg</iconset>
+          <iconset resource="icons.qrc">
+           <normaloff>:/images/shutter.svg</normaloff>
+           <normalon>:/images/images/shutter.svg</normalon>:/images/shutter.svg</iconset>
          </property>
         </widget>
        </item>
@@ -166,6 +167,11 @@
          <property name="text">
           <string>Запис</string>
          </property>
+         <property name="icon">
+          <iconset>
+           <normalon>:/images/record.svg</normalon>
+          </iconset>
+         </property>
         </widget>
        </item>
        <item>
@@ -179,6 +185,11 @@
          <property name="text">
           <string>Пауза</string>
          </property>
+         <property name="icon">
+          <iconset>
+           <normalon>:/images/pause.svg</normalon>
+          </iconset>
+         </property>
         </widget>
        </item>
        <item>
@@ -191,6 +202,11 @@
          </property>
          <property name="text">
           <string>Зупинка</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normalon>:/images/stop.svg</normalon>
+          </iconset>
          </property>
         </widget>
        </item>
@@ -217,6 +233,13 @@
          </property>
          <property name="text">
           <string>Без звуку</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normalon>:/images/mic-on.svg</normalon>
+           <disabledoff>:/images/mic-off.svg</disabledoff>
+           <disabledon>:/images/mic-off.svg</disabledon>
+          </iconset>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -580,7 +603,6 @@
     <addaction name="actionStopCamera"/>
     <addaction name="separator"/>
     <addaction name="actionSettings"/>
-    <addaction name="actionSetMetadata"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -625,11 +647,6 @@
     <string>Про програму</string>
    </property>
   </action>
-  <action name="actionSetMetadata">
-   <property name="text">
-    <string>Встановити метадані</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -639,12 +656,14 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonRecord</sender>
    <signal>clicked()</signal>
-   <receiver>Camera</receiver>
+   <receiver>CameraCapture</receiver>
    <slot>record()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -660,7 +679,7 @@
   <connection>
    <sender>buttonStop</sender>
    <signal>clicked()</signal>
-   <receiver>Camera</receiver>
+   <receiver>CameraCapture</receiver>
    <slot>stop()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -676,7 +695,7 @@
   <connection>
    <sender>buttonPause</sender>
    <signal>clicked()</signal>
-   <receiver>Camera</receiver>
+   <receiver>CameraCapture</receiver>
    <slot>pause()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -692,7 +711,7 @@
   <connection>
    <sender>actionExit</sender>
    <signal>triggered()</signal>
-   <receiver>Camera</receiver>
+   <receiver>CameraCapture</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -708,7 +727,7 @@
   <connection>
    <sender>buttonTakeImage</sender>
    <signal>clicked()</signal>
-   <receiver>Camera</receiver>
+   <receiver>CameraCapture</receiver>
    <slot>takeImage()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -724,7 +743,7 @@
   <connection>
    <sender>buttonMute</sender>
    <signal>toggled(bool)</signal>
-   <receiver>Camera</receiver>
+   <receiver>CameraCapture</receiver>
    <slot>setMuted(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -740,8 +759,8 @@
   <connection>
    <sender>actionSettings</sender>
    <signal>triggered()</signal>
-   <receiver>Camera</receiver>
-   <slot>configureCaptureSettings()</slot>
+   <receiver>CameraCapture</receiver>
+   <slot>openSettings()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -756,7 +775,7 @@
   <connection>
    <sender>actionStartCamera</sender>
    <signal>triggered()</signal>
-   <receiver>Camera</receiver>
+   <receiver>CameraCapture</receiver>
    <slot>startCamera()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -772,7 +791,7 @@
   <connection>
    <sender>actionStopCamera</sender>
    <signal>triggered()</signal>
-   <receiver>Camera</receiver>
+   <receiver>CameraCapture</receiver>
    <slot>stopCamera()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -785,18 +804,102 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionAbout</sender>
+   <signal>triggered()</signal>
+   <receiver>CameraCapture</receiver>
+   <slot>openAbout()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>434</x>
+     <y>342</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderExposureCompensation</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>CameraCapture</receiver>
+   <slot>setExposureCompensation(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>151</x>
+     <y>599</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>434</x>
+     <y>342</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonClearTimer</sender>
+   <signal>clicked()</signal>
+   <receiver>CameraCapture</receiver>
+   <slot>clearTimer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>472</x>
+     <y>615</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>434</x>
+     <y>342</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonSetTimerValue</sender>
+   <signal>clicked()</signal>
+   <receiver>CameraCapture</receiver>
+   <slot>setTimerValue()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>615</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>434</x>
+     <y>342</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBoxGridSelection</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>CameraCapture</receiver>
+   <slot>setGrid(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>690</x>
+     <y>599</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>434</x>
+     <y>342</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>record()</slot>
   <slot>pause()</slot>
   <slot>stop()</slot>
   <slot>enablePreview(bool)</slot>
-  <slot>configureCaptureSettings()</slot>
+  <slot>openSettings()</slot>
   <slot>takeImage()</slot>
   <slot>startCamera()</slot>
   <slot>toggleLock()</slot>
   <slot>setMuted(bool)</slot>
   <slot>stopCamera()</slot>
   <slot>setExposureCompensation(int)</slot>
+  <slot>openAbout()</slot>
+  <slot>setTimerValue()</slot>
+  <slot>clearTimer()</slot>
+  <slot>setGrid(int)</slot>
  </slots>
 </ui>

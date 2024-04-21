@@ -9,12 +9,14 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Multimedia MultimediaWidgets Widge
 
 qt_add_executable(CamCapture
     MANUAL_FINALIZATION
-    camera.cpp camera.h camera.ui
+    cameracapture.cpp cameracapture.h cameracapture.ui
 
     main.cpp
     settings.cpp settings.h settings.ui
-    metadatadialog.cpp metadatadialog.h
+
     .gitignore
+    about.h about.cpp about.ui
+    icons.qrc
 )
 
 set_target_properties(CamCapture PROPERTIES
@@ -27,18 +29,6 @@ target_link_libraries(CamCapture PUBLIC
     Qt::Multimedia
     Qt::MultimediaWidgets
     Qt::Widgets
-)
-
-# Resources:
-set(CamCapture_resource_files
-    "images/shutter.svg"
-)
-
-qt_add_resources(CamCapture "CamCapture"
-    PREFIX
-        "/"
-    FILES
-        ${CamCapture_resource_files}
 )
 
 qt_finalize_executable(CamCapture)

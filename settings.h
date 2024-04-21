@@ -13,8 +13,7 @@ namespace Ui {
 }
 QT_END_NAMESPACE
 
-class Settings : public QDialog
-{
+class Settings : public QDialog {
     Q_OBJECT
 
 public:

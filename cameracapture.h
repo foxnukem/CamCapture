@@ -1,5 +1,5 @@
-#ifndef CAMERA_H
-#define CAMERA_H
+#ifndef CAMERACAPTURE_H
+#define CAMERACAPTURE_H
 
 #include <QAudioInput>
 #include <QCamera>
@@ -14,22 +14,18 @@
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-class Camera;
+    class CameraCapture;
 }
 class QActionGroup;
 QT_END_NAMESPACE
 
 class MetaDataDialog;
 
-class Camera : public QMainWindow
-{
+class CameraCapture : public QMainWindow {
     Q_OBJECT
 
 public:
-    Camera();
-
-public slots:
-    void saveMetaData();
+    CameraCapture();
 
 private slots:
     void setCamera(const QCameraDevice &cameraDevice);
@@ -37,15 +33,19 @@ private slots:
     void startCamera();
     void stopCamera();
 
+    void takeImage();
     void record();
     void pause();
     void stop();
     void setMuted(bool);
 
-    void takeImage();
-    void displayCaptureError(int, QImageCapture::Error, const QString &errorString);
+    void openSettings();
+    void openAbout();
+    void setTimerValue();
+    void clearTimer();
+    void setGrid(int index);
 
-    void configureCaptureSettings();
+    void displayCaptureError(int, QImageCapture::Error, const QString &errorString);
 
     void displayRecorderError();
     void displayCameraError();
@@ -68,14 +68,12 @@ private slots:
 
     void updateCameras();
 
-    void showMetaDataDialog();
-
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
 
 private:
-    Ui::Camera *ui;
+    Ui::CameraCapture *ui;
 
     QActionGroup *videoDevicesGroup = nullptr;
 
