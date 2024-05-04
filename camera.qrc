@@ -1,5 +1,11 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
+    <file>images/info.svg</file>
+    <file>images/mic-off.svg</file>
+    <file>images/mic-on.svg</file>
+    <file>images/pause.svg</file>
+    <file>images/record.svg</file>
     <file>images/shutter.svg</file>
+    <file>images/stop.svg</file>
 </qresource>
 </RCC>

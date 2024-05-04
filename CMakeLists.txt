@@ -16,11 +16,28 @@ qt_add_executable(CamCapture
 
     .gitignore
     about.h about.cpp about.ui
-    icons.qrc
+    camera.qrc
 )
 
 set_target_properties(CamCapture PROPERTIES
     WIN32_EXECUTABLE TRUE
+)
+
+set(CamCapture_resource_files
+    "images/shutter.svg"
+    "images/stop.svg"
+    "images/record.svg"
+    "images/pause.svg"
+    "images/mic-on.svg"
+    "images/mic-off.svg"
+    "images/info.svg"
+)
+
+qt_add_resources(CamCapture "CamCapture"
+    PREFIX
+        "/"
+    FILES
+        ${CamCapture_resource_files}
 )
 
 target_link_libraries(CamCapture PUBLIC

@@ -46,9 +46,9 @@
           <string>Знімок</string>
          </property>
          <property name="icon">
-          <iconset resource="icons.qrc">
+          <iconset resource="camera.qrc">
            <normaloff>:/images/shutter.svg</normaloff>
-           <normalon>:/images/images/shutter.svg</normalon>:/images/shutter.svg</iconset>
+           <normalon>:/images/shutter.svg</normalon>:/images/shutter.svg</iconset>
          </property>
         </widget>
        </item>
@@ -235,11 +235,13 @@
           <string>Без звуку</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normalon>:/images/mic-on.svg</normalon>
-           <disabledoff>:/images/mic-off.svg</disabledoff>
+          <iconset resource="camera.qrc">
+           <normaloff>:/images/mic-on.svg</normaloff>
+           <normalon>:/images/mic-off.svg</normalon>
+           <disabledoff>:/images/mic-on.svg</disabledoff>
            <disabledon>:/images/mic-off.svg</disabledon>
-          </iconset>
+           <activeoff>:/images/mic-on.svg</activeoff>
+           <activeon>:/images/mic-off.svg</activeon>:/images/mic-on.svg</iconset>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -615,10 +617,21 @@
     <property name="title">
      <string>Інформація</string>
     </property>
+    <addaction name="actionHelp"/>
+    <addaction name="separator"/>
     <addaction name="actionAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuCalibration">
+    <property name="title">
+     <string>Калібрування</string>
+    </property>
+    <addaction name="actionOpenCalibration"/>
+    <addaction name="separator"/>
+    <addaction name="actionClearCalibration"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDevices"/>
+   <addaction name="menuCalibration"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -647,6 +660,21 @@
     <string>Про програму</string>
    </property>
   </action>
+  <action name="actionOpenCalibration">
+   <property name="text">
+    <string>Відкрити файл калібрування</string>
+   </property>
+  </action>
+  <action name="actionClearCalibration">
+   <property name="text">
+    <string>Очистити обране калібрування</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="text">
+    <string>Довідка</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -657,7 +685,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="icons.qrc"/>
+  <include location="camera.qrc"/>
  </resources>
  <connections>
   <connection>
