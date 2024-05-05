@@ -9,6 +9,7 @@
 #include <QMediaMetaData>
 #include <QMediaRecorder>
 #include <QScopedPointer>
+#include <QTimer>
 
 #include <QMainWindow>
 
@@ -29,6 +30,7 @@ public:
 
 private slots:
     void setCamera(const QCameraDevice &cameraDevice);
+    void setAudioInput(const QAudioDevice &audioDevice);
 
     void startCamera();
     void stopCamera();
@@ -41,18 +43,16 @@ private slots:
 
     void openSettings();
     void openAbout();
+
     void setTimerValue();
     void clearTimer();
+
     void setGrid(int index);
 
-    void displayCaptureError(int, QImageCapture::Error, const QString &errorString);
-
-    void displayRecorderError();
-    void displayCameraError();
-
     void updateCameraDevice(QAction *action);
-
     void updateCameraActive(bool active);
+    void updateAudioInputDevice(QAction *action);
+
     void updateRecorderState(QMediaRecorder::RecorderState state);
     void setExposureCompensation(int index);
 
@@ -67,6 +67,11 @@ private slots:
     void imageSaved(int id, const QString &fileName);
 
     void updateCameras();
+    void updateAudioDevices();
+
+    void displayCaptureError(int, QImageCapture::Error, const QString &errorString);
+    void displayRecorderError();
+    void displayCameraError();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -76,8 +81,10 @@ private:
     Ui::CameraCapture *ui;
 
     QActionGroup *videoDevicesGroup = nullptr;
+    QActionGroup *audioDevicesGroup = nullptr;
 
-    QMediaDevices m_devices;
+    QMediaDevices m_videoDevices;
+    QMediaDevices m_audioDevices;
     QScopedPointer<QImageCapture> m_imageCapture;
     QMediaCaptureSession m_captureSession;
     QScopedPointer<QCamera> m_camera;
@@ -89,6 +96,8 @@ private:
     bool m_doImageCapture = true;
 
     MetaDataDialog *m_metaDataDialog = nullptr;
+
+    int m_timerValueInSeconds;
 };
 
 #endif

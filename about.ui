@@ -6,9 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>396</width>
+    <width>399</width>
     <height>506</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <stylestrategy>PreferAntialias</stylestrategy>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Про програму</string>
@@ -19,7 +24,13 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayoutInfo">
        <item>
-        <widget class="QGraphicsView" name="graphicsViewIcon">
+        <widget class="QLabel" name="graphicsViewIcon">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>128</width>
@@ -31,6 +42,18 @@
            <width>128</width>
            <height>128</height>
           </size>
+         </property>
+         <property name="text">
+          <string notr="true"/>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::PlainText</enum>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="camera.qrc">:/images/logo.svg</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -55,6 +78,7 @@
             <font>
              <pointsize>10</pointsize>
              <bold>true</bold>
+             <stylestrategy>PreferAntialias</stylestrategy>
             </font>
            </property>
            <property name="text">
@@ -187,7 +211,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="camera.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

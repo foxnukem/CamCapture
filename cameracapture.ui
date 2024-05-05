@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>CamCapture</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="camera.qrc">
+    <normaloff>:/images/logo.svg</normaloff>:/images/logo.svg</iconset>
+  </property>
   <widget class="QWidget" name="widgetMain">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -608,30 +612,25 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuDevices">
+   <widget class="QMenu" name="menuVideoDevices">
     <property name="title">
-     <string>Пристрої</string>
+     <string>Веб-камери</string>
     </property>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
      <string>Інформація</string>
     </property>
-    <addaction name="actionHelp"/>
-    <addaction name="separator"/>
     <addaction name="actionAbout"/>
    </widget>
-   <widget class="QMenu" name="menuCalibration">
+   <widget class="QMenu" name="menuAudioDevices">
     <property name="title">
-     <string>Калібрування</string>
+     <string>Звукові входи</string>
     </property>
-    <addaction name="actionOpenCalibration"/>
-    <addaction name="separator"/>
-    <addaction name="actionClearCalibration"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuDevices"/>
-   <addaction name="menuCalibration"/>
+   <addaction name="menuVideoDevices"/>
+   <addaction name="menuAudioDevices"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

@@ -7,5 +7,6 @@
     <file>images/record.svg</file>
     <file>images/shutter.svg</file>
     <file>images/stop.svg</file>
+    <file>images/logo.svg</file>
 </qresource>
 </RCC>

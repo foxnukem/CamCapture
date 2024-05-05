@@ -27,21 +27,27 @@
 
 CameraCapture::CameraCapture() : ui(new Ui::CameraCapture) {
     ui->setupUi(this);
-
-    m_audioInput.reset(new QAudioInput);
-    m_captureSession.setAudioInput(m_audioInput.get());
+    ui->buttonSetTimerValue->setDisabled(false);
+    ui->spinBoxTimerValue->setDisabled(false);
+    ui->buttonClearTimer->setDisabled(true);
 
     // Camera devices:
     videoDevicesGroup = new QActionGroup(this);
     videoDevicesGroup->setExclusive(true);
     updateCameras();
-    connect(&m_devices, &QMediaDevices::videoInputsChanged, this, &CameraCapture::updateCameras);
+    connect(&m_videoDevices, &QMediaDevices::videoInputsChanged, this, &CameraCapture::updateCameras);
+    connect(videoDevicesGroup, &QActionGroup::triggered, this, &CameraCapture::updateCameraDevice);    
+    setCamera(QMediaDevices::defaultVideoInput());
 
-    connect(videoDevicesGroup, &QActionGroup::triggered, this, &CameraCapture::updateCameraDevice);
+    // Audio inputs:
+    audioDevicesGroup = new QActionGroup(this);
+    audioDevicesGroup->setExclusive(true);
+    updateAudioDevices();
+    connect(&m_audioDevices, &QMediaDevices::audioInputsChanged, this, &CameraCapture::updateAudioDevices);
+    connect(audioDevicesGroup, &QActionGroup::triggered, this, &CameraCapture::updateAudioInputDevice);
+    setAudioInput(QMediaDevices::defaultAudioInput());
 
     connect(ui->sliderExposureCompensation, &QAbstractSlider::valueChanged, this, &CameraCapture::setExposureCompensation);
-
-    setCamera(QMediaDevices::defaultVideoInput());
 }
 
 void CameraCapture::setCamera(const QCameraDevice &cameraDevice) {
@@ -75,6 +81,11 @@ void CameraCapture::setCamera(const QCameraDevice &cameraDevice) {
     readyForCapture(m_imageCapture->isReadyForCapture());
 
     m_camera->start();
+}
+
+void CameraCapture::setAudioInput(const QAudioDevice &audioDevice) {
+    m_audioInput.reset(new QAudioInput(audioDevice));
+    m_captureSession.setAudioInput(m_audioInput.get());
 }
 
 void CameraCapture::keyPressEvent(QKeyEvent *event) {
@@ -125,6 +136,7 @@ void CameraCapture::openSettings() {
 }
 
 void CameraCapture::record() {
+    // todo: timer
     m_mediaRecorder->record();
     updateRecordTime();
 }
@@ -211,6 +223,10 @@ void CameraCapture::updateCameraDevice(QAction *action) {
     setCamera(qvariant_cast<QCameraDevice>(action->data()));
 }
 
+void CameraCapture::updateAudioInputDevice(QAction *action) {
+    setAudioInput(qvariant_cast<QAudioDevice>(action->data()));
+}
+
 void CameraCapture::displayViewfinder() {
     ui->stackedWidget->setCurrentIndex(0);
 }
@@ -243,7 +259,7 @@ void CameraCapture::closeEvent(QCloseEvent *event) {
 }
 
 void CameraCapture::updateCameras() {
-    ui->menuDevices->clear();
+    ui->menuVideoDevices->clear();
     const QList<QCameraDevice> availableCameras = QMediaDevices::videoInputs();
     for (const QCameraDevice &cameraDevice : availableCameras) {
         QAction *videoDeviceAction = new QAction(cameraDevice.description(), videoDevicesGroup);
@@ -252,7 +268,21 @@ void CameraCapture::updateCameras() {
         if (cameraDevice == QMediaDevices::defaultVideoInput())
             videoDeviceAction->setChecked(true);
 
-        ui->menuDevices->addAction(videoDeviceAction);
+        ui->menuVideoDevices->addAction(videoDeviceAction);
+    }
+}
+
+void CameraCapture::updateAudioDevices() {
+    ui->menuAudioDevices->clear();
+    const QList<QAudioDevice> avaliableAudioDevices = QMediaDevices::audioInputs();
+    for (const QAudioDevice &audioInputDevice : avaliableAudioDevices) {
+        QAction *audioInputDeviceAction = new QAction(audioInputDevice.description(), videoDevicesGroup);
+        audioInputDeviceAction->setCheckable(true);
+        audioInputDeviceAction->setData(QVariant::fromValue(audioInputDevice));
+        if (audioInputDevice == QMediaDevices::defaultAudioInput())
+            audioInputDeviceAction->setChecked(true);
+
+        ui->menuAudioDevices->addAction(audioInputDeviceAction);
     }
 }
 
@@ -262,14 +292,20 @@ void CameraCapture::openAbout() {
 }
 
 void CameraCapture::setTimerValue() {
-// todo:
+    m_timerValueInSeconds = ui->spinBoxTimerValue->value();
+    ui->buttonSetTimerValue->setDisabled(true);
+    ui->spinBoxTimerValue->setDisabled(true);
+    ui->buttonClearTimer->setDisabled(false);
 }
 
 
 void CameraCapture::clearTimer() {
-
+    m_timerValueInSeconds = 0;
+    ui->buttonSetTimerValue->setDisabled(false);
+    ui->spinBoxTimerValue->setDisabled(false);
+    ui->buttonClearTimer->setDisabled(true);
 }
 
 void CameraCapture::setGrid(int index) {
-
+    // todo:
 }

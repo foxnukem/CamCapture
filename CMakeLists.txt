@@ -31,6 +31,7 @@ set(CamCapture_resource_files
     "images/mic-on.svg"
     "images/mic-off.svg"
     "images/info.svg"
+    "images/logo.svg"
 )
 
 qt_add_resources(CamCapture "CamCapture"
