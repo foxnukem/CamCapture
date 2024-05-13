@@ -17,6 +17,10 @@ qt_add_executable(CamCapture
     .gitignore
     about.h about.cpp about.ui
     camera.qrc
+    GridPainter.h
+    GoldenRatioPainter.h
+    CrosshairsPainter.h
+    SquarePainter.h
 )
 
 set_target_properties(CamCapture PROPERTIES

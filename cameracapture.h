@@ -9,7 +9,6 @@
 #include <QMediaMetaData>
 #include <QMediaRecorder>
 #include <QScopedPointer>
-#include <QTimer>
 
 #include <QMainWindow>
 
@@ -54,9 +53,9 @@ private slots:
     void updateAudioInputDevice(QAction *action);
 
     void updateRecorderState(QMediaRecorder::RecorderState state);
-    void setExposureCompensation(int index);
 
     void updateRecordTime();
+    void updateTimerTime();
 
     void processCapturedImage(int requestId, const QImage &img);
 
@@ -94,10 +93,8 @@ private:
     bool m_isCapturingImage = false;
     bool m_applicationExiting = false;
     bool m_doImageCapture = true;
-
-    MetaDataDialog *m_metaDataDialog = nullptr;
-
     int m_timerValueInSeconds;
+    QObject *currentGrid = nullptr;
 };
 
 #endif

@@ -3,6 +3,10 @@
 
 #include "settings.h"
 #include "about.h"
+#include "GridPainter.h"
+#include "CrosshairsPainter.h"
+#include "GoldenRatioPainter.h"
+#include "SquarePainter.h"
 
 #include <QAudioDevice>
 #include <QAudioInput>
@@ -46,8 +50,6 @@ CameraCapture::CameraCapture() : ui(new Ui::CameraCapture) {
     connect(&m_audioDevices, &QMediaDevices::audioInputsChanged, this, &CameraCapture::updateAudioDevices);
     connect(audioDevicesGroup, &QActionGroup::triggered, this, &CameraCapture::updateAudioInputDevice);
     setAudioInput(QMediaDevices::defaultAudioInput());
-
-    connect(ui->sliderExposureCompensation, &QAbstractSlider::valueChanged, this, &CameraCapture::setExposureCompensation);
 }
 
 void CameraCapture::setCamera(const QCameraDevice &cameraDevice) {
@@ -85,7 +87,7 @@ void CameraCapture::setCamera(const QCameraDevice &cameraDevice) {
 
 void CameraCapture::setAudioInput(const QAudioDevice &audioDevice) {
     m_audioInput.reset(new QAudioInput(audioDevice));
-    m_captureSession.setAudioInput(m_audioInput.get());
+    m_captureSession.setAudioInput(m_audioInput.data());
 }
 
 void CameraCapture::keyPressEvent(QKeyEvent *event) {
@@ -93,23 +95,23 @@ void CameraCapture::keyPressEvent(QKeyEvent *event) {
         return;
 
     switch (event->key()) {
-    case Qt::Key_CameraFocus:
-        displayViewfinder();
-        event->accept();
-        break;
-    case Qt::Key_Camera:
-        if (m_doImageCapture) {
-            takeImage();
-        } else {
-            if (m_mediaRecorder->recorderState() == QMediaRecorder::RecordingState)
-                stop();
-            else
-                record();
-        }
-        event->accept();
-        break;
-    default:
-        QMainWindow::keyPressEvent(event);
+        case Qt::Key_CameraFocus:
+            displayViewfinder();
+            event->accept();
+            break;
+        case Qt::Key_Camera:
+            if (m_doImageCapture) {
+                takeImage();
+            } else {
+                if (m_mediaRecorder->recorderState() == QMediaRecorder::RecordingState)
+                    stop();
+                else
+                    record();
+            }
+            event->accept();
+            break;
+        default:
+            QMainWindow::keyPressEvent(event);
     }
 }
 
@@ -155,13 +157,14 @@ void CameraCapture::setMuted(bool muted) {
 
 void CameraCapture::takeImage() {
     m_isCapturingImage = true;
+    // todo timer
     m_imageCapture->captureToFile();
 }
 
 void CameraCapture::displayCaptureError(int id, const QImageCapture::Error error, const QString &errorString) {
     Q_UNUSED(id);
     Q_UNUSED(error);
-    QMessageBox::warning(this, tr("Image Capture Error"), errorString);
+    QMessageBox::warning(this, tr("Помилка запису зображення"), errorString);
     m_isCapturingImage = false;
 }
 
@@ -187,26 +190,22 @@ void CameraCapture::updateCameraActive(bool active) {
 
 void CameraCapture::updateRecorderState(QMediaRecorder::RecorderState state) {
     switch (state) {
-    case QMediaRecorder::StoppedState:
-        ui->buttonRecord->setEnabled(true);
-        ui->buttonPause->setEnabled(true);
-        ui->buttonStop->setEnabled(false);
-        break;
-    case QMediaRecorder::PausedState:
-        ui->buttonRecord->setEnabled(true);
-        ui->buttonPause->setEnabled(false);
-        ui->buttonStop->setEnabled(true);
-        break;
-    case QMediaRecorder::RecordingState:
-        ui->buttonRecord->setEnabled(false);
-        ui->buttonPause->setEnabled(true);
-        ui->buttonStop->setEnabled(true);
-        break;
+        case QMediaRecorder::StoppedState:
+            ui->buttonRecord->setEnabled(true);
+            ui->buttonPause->setEnabled(true);
+            ui->buttonStop->setEnabled(false);
+            break;
+        case QMediaRecorder::PausedState:
+            ui->buttonRecord->setEnabled(true);
+            ui->buttonPause->setEnabled(false);
+            ui->buttonStop->setEnabled(true);
+            break;
+        case QMediaRecorder::RecordingState:
+            ui->buttonRecord->setEnabled(false);
+            ui->buttonPause->setEnabled(true);
+            ui->buttonStop->setEnabled(true);
+            break;
     }
-}
-
-void CameraCapture::setExposureCompensation(int index) {
-    m_camera->setExposureCompensation(index * 0.5);
 }
 
 void CameraCapture::displayRecorderError() {
@@ -237,6 +236,10 @@ void CameraCapture::displayCapturedImage() {
 
 void CameraCapture::readyForCapture(bool ready) {
     ui->buttonTakeImage->setEnabled(ready);
+}
+
+void CameraCapture::updateTimerTime() {
+
 }
 
 void CameraCapture::imageSaved(int id, const QString &fileName) {
@@ -298,7 +301,6 @@ void CameraCapture::setTimerValue() {
     ui->buttonClearTimer->setDisabled(false);
 }
 
-
 void CameraCapture::clearTimer() {
     m_timerValueInSeconds = 0;
     ui->buttonSetTimerValue->setDisabled(false);
@@ -307,5 +309,16 @@ void CameraCapture::clearTimer() {
 }
 
 void CameraCapture::setGrid(int index) {
-    // todo:
+    if (index == 0) {
+        currentGrid = nullptr;
+        ui->viewfinder->repaint();
+    } else if (index == 1) {
+        currentGrid = new GridPainter(ui->viewfinder);
+    } else if (index == 2) {
+        currentGrid = new GoldenRatioPainter(ui->viewfinder);
+    } else if (index == 3) {
+        currentGrid = new CrossHairsPainter(ui->viewfinder);
+    } else if (index == 4) {
+        currentGrid = new SquarePainter(ui->viewfinder);
+    }
 }

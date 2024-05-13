@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Video Settings</string>
+   <string>Налаштування</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="camera.qrc">
+    <normaloff>:/images/logo.svg</normaloff>:/images/logo.svg</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="4">
@@ -271,7 +275,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="camera.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBoxSettings</sender>
