@@ -1,11 +1,11 @@
-#include "cameracapture.h"
+#include "cameracapturemain.h"
 
 #include <QApplication>
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    CameraCapture camera;
+    CameraCaptureMain camera;
     camera.show();
 
     return app.exec();

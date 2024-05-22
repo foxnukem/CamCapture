@@ -1,6 +1,8 @@
 #ifndef CAMERACAPTURE_H
 #define CAMERACAPTURE_H
 
+#include "cameracapturemain.h"
+
 #include <QAudioInput>
 #include <QCamera>
 #include <QImageCapture>
@@ -10,91 +12,35 @@
 #include <QMediaRecorder>
 #include <QScopedPointer>
 
-#include <QMainWindow>
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-    class CameraCapture;
-}
-class QActionGroup;
-QT_END_NAMESPACE
-
-class MetaDataDialog;
-
-class CameraCapture : public QMainWindow {
-    Q_OBJECT
-
+class CameraCapture : public QObject
+{
 public:
-    CameraCapture();
-
-private slots:
+    CameraCapture(CameraCaptureMain *mainForm);
+    ~CameraCapture();
     void setCamera(const QCameraDevice &cameraDevice);
     void setAudioInput(const QAudioDevice &audioDevice);
-
     void startCamera();
     void stopCamera();
-
     void takeImage();
     void record();
     void pause();
     void stop();
     void setMuted(bool);
-
-    void openSettings();
-    void openAbout();
-
-    void setTimerValue();
+    void setTimerValue(int newValue);
     void clearTimer();
-
     void setGrid(int index);
 
-    void updateCameraDevice(QAction *action);
-    void updateCameraActive(bool active);
-    void updateAudioInputDevice(QAction *action);
-
-    void updateRecorderState(QMediaRecorder::RecorderState state);
-
-    void updateRecordTime();
-    void updateTimerTime();
-
-    void processCapturedImage(int requestId, const QImage &img);
-
-    void displayViewfinder();
-    void displayCapturedImage();
-
-    void readyForCapture(bool ready);
-    void imageSaved(int id, const QString &fileName);
-
-    void updateCameras();
-    void updateAudioDevices();
-
-    void displayCaptureError(int, QImageCapture::Error, const QString &errorString);
-    void displayRecorderError();
-    void displayCameraError();
-
-protected:
-    void keyPressEvent(QKeyEvent *event) override;
-    void closeEvent(QCloseEvent *event) override;
-
-private:
-    Ui::CameraCapture *ui;
-
-    QActionGroup *videoDevicesGroup = nullptr;
-    QActionGroup *audioDevicesGroup = nullptr;
-
-    QMediaDevices m_videoDevices;
-    QMediaDevices m_audioDevices;
     QScopedPointer<QImageCapture> m_imageCapture;
-    QMediaCaptureSession m_captureSession;
-    QScopedPointer<QCamera> m_camera;
     QScopedPointer<QAudioInput> m_audioInput;
     QScopedPointer<QMediaRecorder> m_mediaRecorder;
+    QScopedPointer<QCamera> m_camera;
+    QMediaCaptureSession m_captureSession;
+private:
+    CameraCaptureMain *mainForm;
+    QMediaDevices m_videoDevices;
+    QMediaDevices m_audioDevices;
 
-    bool m_isCapturingImage = false;
-    bool m_applicationExiting = false;
-    bool m_doImageCapture = true;
     int m_timerValueInSeconds;
-    QObject *currentGrid = nullptr;
 };
 
-#endif
+#endif // CAMERACAPTURE_H

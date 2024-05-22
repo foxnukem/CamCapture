@@ -1,0 +1,9 @@
+<svg width="1000" height="618" xmlns="http://www.w3.org/2000/svg">
+  <!-- Vertical lines -->
+  <line x1="333.33" y1="0" x2="333.33" y2="618" stroke="white" stroke-width="1"/>
+  <line x1="666.67" y1="0" x2="666.67" y2="618" stroke="white" stroke-width="1"/>
+  
+  <!-- Horizontal lines -->
+  <line x1="0" y1="206" x2="1000" y2="206" stroke="white" stroke-width="1"/>
+  <line x1="0" y1="412" x2="1000" y2="412" stroke="white" stroke-width="1"/>
+</svg>

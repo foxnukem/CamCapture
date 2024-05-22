@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CameraCapture</class>
- <widget class="QMainWindow" name="CameraCapture">
+ <class>CameraCaptureMain</class>
+ <widget class="QMainWindow" name="CameraCaptureMain">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -269,7 +269,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="QStackedWidget" name="preview">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>1</horstretch>
@@ -345,8 +345,22 @@
       </property>
       <widget class="QWidget" name="viewfinderPage">
        <layout class="QGridLayout" name="gridLayout_5">
-        <item row="1" column="0">
-         <widget class="QVideoWidget" name="viewfinder" native="true"/>
+        <item row="0" column="0">
+         <widget class="QVideoWidget" name="viewfinder" native="true">
+          <widget class="QLabel" name="gridView">
+           <property name="geometry">
+            <rect>
+             <x>8</x>
+             <y>5</y>
+             <width>431</width>
+             <height>401</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -523,7 +537,7 @@
             </item>
             <item>
              <property name="text">
-              <string>Хрест</string>
+              <string>Сітка 2х2</string>
              </property>
             </item>
            </widget>
@@ -578,6 +592,7 @@
     <property name="title">
      <string>Інформація</string>
     </property>
+    <addaction name="actionHelpPopup"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuAudioDevices">
@@ -616,19 +631,9 @@
     <string>Про програму</string>
    </property>
   </action>
-  <action name="actionOpenCalibration">
+  <action name="actionHelpPopup">
    <property name="text">
-    <string>Відкрити файл калібрування</string>
-   </property>
-  </action>
-  <action name="actionClearCalibration">
-   <property name="text">
-    <string>Очистити обране калібрування</string>
-   </property>
-  </action>
-  <action name="actionHelp">
-   <property name="text">
-    <string>Довідка</string>
+    <string>Допомога</string>
    </property>
   </action>
  </widget>
@@ -647,7 +652,7 @@
   <connection>
    <sender>buttonRecord</sender>
    <signal>clicked()</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>record()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -663,7 +668,7 @@
   <connection>
    <sender>buttonStop</sender>
    <signal>clicked()</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>stop()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -679,7 +684,7 @@
   <connection>
    <sender>buttonPause</sender>
    <signal>clicked()</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>pause()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -695,7 +700,7 @@
   <connection>
    <sender>actionExit</sender>
    <signal>triggered()</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -711,7 +716,7 @@
   <connection>
    <sender>buttonTakeImage</sender>
    <signal>clicked()</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>takeImage()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -727,7 +732,7 @@
   <connection>
    <sender>buttonMute</sender>
    <signal>toggled(bool)</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>setMuted(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -743,7 +748,7 @@
   <connection>
    <sender>actionSettings</sender>
    <signal>triggered()</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>openSettings()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -759,7 +764,7 @@
   <connection>
    <sender>actionStartCamera</sender>
    <signal>triggered()</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>startCamera()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -775,7 +780,7 @@
   <connection>
    <sender>actionStopCamera</sender>
    <signal>triggered()</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>stopCamera()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -791,7 +796,7 @@
   <connection>
    <sender>actionAbout</sender>
    <signal>triggered()</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>openAbout()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -807,7 +812,7 @@
   <connection>
    <sender>buttonClearTimer</sender>
    <signal>clicked()</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>clearTimer()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -823,7 +828,7 @@
   <connection>
    <sender>buttonSetTimerValue</sender>
    <signal>clicked()</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>setTimerValue()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -839,12 +844,28 @@
   <connection>
    <sender>comboBoxGridSelection</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>CameraCapture</receiver>
+   <receiver>CameraCaptureMain</receiver>
    <slot>setGrid(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>690</x>
      <y>599</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>434</x>
+     <y>342</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionHelpPopup</sender>
+   <signal>triggered()</signal>
+   <receiver>CameraCaptureMain</receiver>
+   <slot>openHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>434</x>
@@ -866,6 +887,7 @@
   <slot>stopCamera()</slot>
   <slot>setExposureCompensation(int)</slot>
   <slot>openAbout()</slot>
+  <slot>openHelp()</slot>
   <slot>setTimerValue()</slot>
   <slot>clearTimer()</slot>
   <slot>setGrid(int)</slot>

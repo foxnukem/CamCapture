@@ -1,0 +1,6 @@
+<svg width="800" height="200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background to visualize the wide-screen format -->
+  <rect width="800" height="200" fill="none" stroke="none"/>
+  <!-- Centered square with height same as image's height -->
+  <rect width="200" height="200" x="300" y="0" fill="none" stroke="white" stroke-width="1"/>
+</svg>

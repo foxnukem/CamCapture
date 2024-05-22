@@ -4,12 +4,12 @@ project(CamCapture LANGUAGES CXX)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_PREFIX_PATH "C:/Qt/6.5.3/msvc2019_64")
+# set(CMAKE_PREFIX_PATH "C:/Qt/6.5.3/msvc2019_64")
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Multimedia MultimediaWidgets Widgets)
 
 qt_add_executable(CamCapture
     MANUAL_FINALIZATION
-    cameracapture.cpp cameracapture.h cameracapture.ui
+    cameracapturemain.cpp cameracapturemain.h cameracapturemain.ui
 
     main.cpp
     settings.cpp settings.h settings.ui
@@ -17,10 +17,8 @@ qt_add_executable(CamCapture
     .gitignore
     about.h about.cpp about.ui
     camera.qrc
-    GridPainter.h
-    GoldenRatioPainter.h
-    CrosshairsPainter.h
-    SquarePainter.h
+    cameracapture.h cameracapture.cpp
+    help.html
 )
 
 set_target_properties(CamCapture PROPERTIES
@@ -36,7 +34,15 @@ set(CamCapture_resource_files
     "images/mic-off.svg"
     "images/info.svg"
     "images/logo.svg"
+    "images/grid33.svg"
+    "images/square.svg"
+    "images/crosshair.svg"
+    "images/goldenratio.svg"
+    "help.html"
 )
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/help.html
+  ${CMAKE_BINARY_DIR}/help.html COPYONLY)
 
 qt_add_resources(CamCapture "CamCapture"
     PREFIX

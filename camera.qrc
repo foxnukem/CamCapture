@@ -1,12 +1,17 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-    <file>images/info.svg</file>
-    <file>images/mic-off.svg</file>
-    <file>images/mic-on.svg</file>
-    <file>images/pause.svg</file>
-    <file>images/record.svg</file>
-    <file>images/shutter.svg</file>
-    <file>images/stop.svg</file>
-    <file>images/logo.svg</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>images/info.svg</file>
+        <file>images/mic-off.svg</file>
+        <file>images/mic-on.svg</file>
+        <file>images/pause.svg</file>
+        <file>images/record.svg</file>
+        <file>images/shutter.svg</file>
+        <file>images/stop.svg</file>
+        <file>images/logo.svg</file>
+        <file>images/grid33.svg</file>
+        <file>images/crosshair.svg</file>
+        <file>images/square.svg</file>
+        <file>images/goldenratio.svg</file>
+        <file>help.html</file>
+    </qresource>
 </RCC>

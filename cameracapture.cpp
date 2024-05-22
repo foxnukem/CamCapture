@@ -1,12 +1,6 @@
 #include "cameracapture.h"
-#include "ui_cameracapture.h"
-
-#include "settings.h"
-#include "about.h"
-#include "GridPainter.h"
-#include "CrosshairsPainter.h"
-#include "GoldenRatioPainter.h"
-#include "SquarePainter.h"
+#include "cameracapturemain.h"
+#include "ui_cameracapturemain.h"
 
 #include <QAudioDevice>
 #include <QAudioInput>
@@ -29,58 +23,46 @@
 #include <QDir>
 #include <QTimer>
 
-CameraCapture::CameraCapture() : ui(new Ui::CameraCapture) {
-    ui->setupUi(this);
-    ui->buttonSetTimerValue->setDisabled(false);
-    ui->spinBoxTimerValue->setDisabled(false);
-    ui->buttonClearTimer->setDisabled(true);
+CameraCapture::CameraCapture(CameraCaptureMain *mainForm) {
+    this->mainForm = mainForm;
+    this->m_timerValueInSeconds = 0;
+    this->setCamera(QMediaDevices::defaultVideoInput());
+    this->setAudioInput(QMediaDevices::defaultAudioInput());
+}
 
-    // Camera devices:
-    videoDevicesGroup = new QActionGroup(this);
-    videoDevicesGroup->setExclusive(true);
-    updateCameras();
-    connect(&m_videoDevices, &QMediaDevices::videoInputsChanged, this, &CameraCapture::updateCameras);
-    connect(videoDevicesGroup, &QActionGroup::triggered, this, &CameraCapture::updateCameraDevice);    
-    setCamera(QMediaDevices::defaultVideoInput());
-
-    // Audio inputs:
-    audioDevicesGroup = new QActionGroup(this);
-    audioDevicesGroup->setExclusive(true);
-    updateAudioDevices();
-    connect(&m_audioDevices, &QMediaDevices::audioInputsChanged, this, &CameraCapture::updateAudioDevices);
-    connect(audioDevicesGroup, &QActionGroup::triggered, this, &CameraCapture::updateAudioInputDevice);
-    setAudioInput(QMediaDevices::defaultAudioInput());
+CameraCapture::~CameraCapture() {
+    delete mainForm;
 }
 
 void CameraCapture::setCamera(const QCameraDevice &cameraDevice) {
     m_camera.reset(new QCamera(cameraDevice));
     m_captureSession.setCamera(m_camera.data());
 
-    connect(m_camera.data(), &QCamera::activeChanged, this, &CameraCapture::updateCameraActive);
-    connect(m_camera.data(), &QCamera::errorOccurred, this, &CameraCapture::displayCameraError);
+    connect(m_camera.data(), &QCamera::activeChanged, this, [=](bool active) { mainForm->updateCameraActive(active); });
+    connect(m_camera.data(), &QCamera::errorOccurred, this, [=]() { mainForm->displayCameraError(); });
 
     if (!m_mediaRecorder) {
         m_mediaRecorder.reset(new QMediaRecorder);
         m_captureSession.setRecorder(m_mediaRecorder.data());
-        connect(m_mediaRecorder.data(), &QMediaRecorder::recorderStateChanged, this, &CameraCapture::updateRecorderState);
-        connect(m_mediaRecorder.data(), &QMediaRecorder::durationChanged, this, &CameraCapture::updateRecordTime);
-        connect(m_mediaRecorder.data(), &QMediaRecorder::errorChanged, this, &CameraCapture::displayRecorderError);
+        connect(m_mediaRecorder.data(), &QMediaRecorder::recorderStateChanged, this, [=](auto state) { mainForm->updateRecorderState(state); });
+        connect(m_mediaRecorder.data(), &QMediaRecorder::durationChanged, this, [=]() { mainForm->updateRecordTime(this->m_mediaRecorder.get()); });
+        connect(m_mediaRecorder.data(), &QMediaRecorder::errorChanged, this, [=]() { mainForm->displayRecorderError(); });
     }
 
     if (!m_imageCapture) {
         m_imageCapture.reset(new QImageCapture);
         m_captureSession.setImageCapture(m_imageCapture.get());
-        connect(m_imageCapture.get(), &QImageCapture::readyForCaptureChanged, this, &CameraCapture::readyForCapture);
-        connect(m_imageCapture.get(), &QImageCapture::imageCaptured, this, &CameraCapture::processCapturedImage);
-        connect(m_imageCapture.get(), &QImageCapture::imageSaved, this, &CameraCapture::imageSaved);
-        connect(m_imageCapture.get(), &QImageCapture::errorOccurred, this, &CameraCapture::displayCaptureError);
+        connect(m_imageCapture.get(), &QImageCapture::readyForCaptureChanged, this, [=](bool ready) { mainForm->readyForCapture(ready); });
+        connect(m_imageCapture.get(), &QImageCapture::imageCaptured, this, [=](int, const QImage &img) { mainForm->processCapturedImage(img); });
+        connect(m_imageCapture.get(), &QImageCapture::imageSaved, this, [=](int, const QString &fileName) { mainForm->imageSaved(fileName); });
+        connect(m_imageCapture.get(), &QImageCapture::errorOccurred, this, [=](int, auto, auto &errorString) { mainForm->displayCaptureError(errorString); });
     }
 
-    m_captureSession.setVideoOutput(ui->viewfinder);
+    m_captureSession.setVideoOutput(mainForm->ui->viewfinder);
 
-    updateCameraActive(m_camera->isActive());
-    updateRecorderState(m_mediaRecorder->recorderState());
-    readyForCapture(m_imageCapture->isReadyForCapture());
+    mainForm->updateCameraActive(m_camera->isActive());
+    mainForm->updateRecorderState(m_mediaRecorder->recorderState());
+    mainForm->readyForCapture(m_imageCapture->isReadyForCapture());
 
     m_camera->start();
 }
@@ -90,57 +72,16 @@ void CameraCapture::setAudioInput(const QAudioDevice &audioDevice) {
     m_captureSession.setAudioInput(m_audioInput.data());
 }
 
-void CameraCapture::keyPressEvent(QKeyEvent *event) {
-    if (event->isAutoRepeat())
-        return;
-
-    switch (event->key()) {
-        case Qt::Key_CameraFocus:
-            displayViewfinder();
-            event->accept();
-            break;
-        case Qt::Key_Camera:
-            if (m_doImageCapture) {
-                takeImage();
-            } else {
-                if (m_mediaRecorder->recorderState() == QMediaRecorder::RecordingState)
-                    stop();
-                else
-                    record();
-            }
-            event->accept();
-            break;
-        default:
-            QMainWindow::keyPressEvent(event);
-    }
-}
-
-void CameraCapture::updateRecordTime() {
-    QString str = tr("Записано %1 сек").arg(m_mediaRecorder->duration() / 1000);
-    ui->statusbar->showMessage(str);
-}
-
-void CameraCapture::processCapturedImage(int requestId, const QImage &img) {
-    Q_UNUSED(requestId);
-    QImage scaledImage = img.scaled(ui->viewfinder->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-    ui->lastImagePreviewLabel->setPixmap(QPixmap::fromImage(scaledImage));
-
-    displayCapturedImage();
-    QTimer::singleShot(4000, this, &CameraCapture::displayViewfinder);
-}
-
-void CameraCapture::openSettings() {
-    Settings settingsDialog(m_imageCapture.data(), m_mediaRecorder.data());
-
-    if (settingsDialog.exec())
-        settingsDialog.applySettings();
-}
-
 void CameraCapture::record() {
-    // todo: timer
+    if (m_timerValueInSeconds > 0) {
+        QTimer::singleShot(1000 * m_timerValueInSeconds, this, [=](){
+            m_mediaRecorder->record();
+            mainForm->updateRecordTime(m_mediaRecorder.data());
+        });
+        return;
+    }
     m_mediaRecorder->record();
-    updateRecordTime();
+    mainForm->updateRecordTime(m_mediaRecorder.data());
 }
 
 void CameraCapture::pause() {
@@ -156,16 +97,19 @@ void CameraCapture::setMuted(bool muted) {
 }
 
 void CameraCapture::takeImage() {
-    m_isCapturingImage = true;
-    // todo timer
+    if (m_timerValueInSeconds > 0) {
+        QTimer::singleShot(1000 * m_timerValueInSeconds, this, [=](){ this->m_imageCapture->captureToFile(); });
+        return;
+    }
     m_imageCapture->captureToFile();
 }
 
-void CameraCapture::displayCaptureError(int id, const QImageCapture::Error error, const QString &errorString) {
-    Q_UNUSED(id);
-    Q_UNUSED(error);
-    QMessageBox::warning(this, tr("Помилка запису зображення"), errorString);
-    m_isCapturingImage = false;
+void CameraCapture::setTimerValue(int newValue) {
+    m_timerValueInSeconds = newValue;
+}
+
+void CameraCapture::clearTimer() {
+    m_timerValueInSeconds = 0;
 }
 
 void CameraCapture::startCamera() {
@@ -176,149 +120,24 @@ void CameraCapture::stopCamera() {
     m_camera->stop();
 }
 
-void CameraCapture::updateCameraActive(bool active) {
-    if (active) {
-        ui->actionStartCamera->setEnabled(false);
-        ui->actionStopCamera->setEnabled(true);
-        ui->actionSettings->setEnabled(true);
-    } else {
-        ui->actionStartCamera->setEnabled(true);
-        ui->actionStopCamera->setEnabled(false);
-        ui->actionSettings->setEnabled(false);
-    }
-}
-
-void CameraCapture::updateRecorderState(QMediaRecorder::RecorderState state) {
-    switch (state) {
-        case QMediaRecorder::StoppedState:
-            ui->buttonRecord->setEnabled(true);
-            ui->buttonPause->setEnabled(true);
-            ui->buttonStop->setEnabled(false);
-            break;
-        case QMediaRecorder::PausedState:
-            ui->buttonRecord->setEnabled(true);
-            ui->buttonPause->setEnabled(false);
-            ui->buttonStop->setEnabled(true);
-            break;
-        case QMediaRecorder::RecordingState:
-            ui->buttonRecord->setEnabled(false);
-            ui->buttonPause->setEnabled(true);
-            ui->buttonStop->setEnabled(true);
-            break;
-    }
-}
-
-void CameraCapture::displayRecorderError() {
-    if (m_mediaRecorder->error() != QMediaRecorder::NoError)
-        QMessageBox::warning(this, tr("Capture Error"), m_mediaRecorder->errorString());
-}
-
-void CameraCapture::displayCameraError() {
-    if (m_camera->error() != QCamera::NoError)
-        QMessageBox::warning(this, tr("Camera Error"), m_camera->errorString());
-}
-
-void CameraCapture::updateCameraDevice(QAction *action) {
-    setCamera(qvariant_cast<QCameraDevice>(action->data()));
-}
-
-void CameraCapture::updateAudioInputDevice(QAction *action) {
-    setAudioInput(qvariant_cast<QAudioDevice>(action->data()));
-}
-
-void CameraCapture::displayViewfinder() {
-    ui->stackedWidget->setCurrentIndex(0);
-}
-
-void CameraCapture::displayCapturedImage() {
-    ui->stackedWidget->setCurrentIndex(1);
-}
-
-void CameraCapture::readyForCapture(bool ready) {
-    ui->buttonTakeImage->setEnabled(ready);
-}
-
-void CameraCapture::updateTimerTime() {
-
-}
-
-void CameraCapture::imageSaved(int id, const QString &fileName) {
-    Q_UNUSED(id);
-    ui->statusbar->showMessage(tr("Записано у \"%1\"").arg(QDir::toNativeSeparators(fileName)));
-
-    m_isCapturingImage = false;
-    if (m_applicationExiting)
-        close();
-}
-
-void CameraCapture::closeEvent(QCloseEvent *event) {
-    if (m_isCapturingImage) {
-        setEnabled(false);
-        m_applicationExiting = true;
-        event->ignore();
-    } else {
-        event->accept();
-    }
-}
-
-void CameraCapture::updateCameras() {
-    ui->menuVideoDevices->clear();
-    const QList<QCameraDevice> availableCameras = QMediaDevices::videoInputs();
-    for (const QCameraDevice &cameraDevice : availableCameras) {
-        QAction *videoDeviceAction = new QAction(cameraDevice.description(), videoDevicesGroup);
-        videoDeviceAction->setCheckable(true);
-        videoDeviceAction->setData(QVariant::fromValue(cameraDevice));
-        if (cameraDevice == QMediaDevices::defaultVideoInput())
-            videoDeviceAction->setChecked(true);
-
-        ui->menuVideoDevices->addAction(videoDeviceAction);
-    }
-}
-
-void CameraCapture::updateAudioDevices() {
-    ui->menuAudioDevices->clear();
-    const QList<QAudioDevice> avaliableAudioDevices = QMediaDevices::audioInputs();
-    for (const QAudioDevice &audioInputDevice : avaliableAudioDevices) {
-        QAction *audioInputDeviceAction = new QAction(audioInputDevice.description(), videoDevicesGroup);
-        audioInputDeviceAction->setCheckable(true);
-        audioInputDeviceAction->setData(QVariant::fromValue(audioInputDevice));
-        if (audioInputDevice == QMediaDevices::defaultAudioInput())
-            audioInputDeviceAction->setChecked(true);
-
-        ui->menuAudioDevices->addAction(audioInputDeviceAction);
-    }
-}
-
-void CameraCapture::openAbout() {
-    About* aboutDialog = new About();
-    aboutDialog->open();
-}
-
-void CameraCapture::setTimerValue() {
-    m_timerValueInSeconds = ui->spinBoxTimerValue->value();
-    ui->buttonSetTimerValue->setDisabled(true);
-    ui->spinBoxTimerValue->setDisabled(true);
-    ui->buttonClearTimer->setDisabled(false);
-}
-
-void CameraCapture::clearTimer() {
-    m_timerValueInSeconds = 0;
-    ui->buttonSetTimerValue->setDisabled(false);
-    ui->spinBoxTimerValue->setDisabled(false);
-    ui->buttonClearTimer->setDisabled(true);
-}
-
 void CameraCapture::setGrid(int index) {
     if (index == 0) {
-        currentGrid = nullptr;
-        ui->viewfinder->repaint();
+        mainForm->ui->gridView->setPixmap(QPixmap());
     } else if (index == 1) {
-        currentGrid = new GridPainter(ui->viewfinder);
+        QImage scaledImage = QImage(":/images/grid33.svg").scaled(mainForm->ui->viewfinder->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        QPixmap pixmap = QPixmap::fromImage(scaledImage);
+        mainForm->ui->gridView->setPixmap(pixmap);
     } else if (index == 2) {
-        currentGrid = new GoldenRatioPainter(ui->viewfinder);
+        QImage scaledImage = QImage(":/images/goldenratio.svg").scaled(mainForm->ui->viewfinder->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        QPixmap pixmap = QPixmap::fromImage(scaledImage);
+        mainForm->ui->gridView->setPixmap(pixmap);
     } else if (index == 3) {
-        currentGrid = new CrossHairsPainter(ui->viewfinder);
+        QImage scaledImage = QImage(":/images/square.svg").scaled(mainForm->ui->viewfinder->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        QPixmap pixmap = QPixmap::fromImage(scaledImage);
+        mainForm->ui->gridView->setPixmap(pixmap);
     } else if (index == 4) {
-        currentGrid = new SquarePainter(ui->viewfinder);
+        QImage scaledImage = QImage(":/images/crosshair.svg").scaled(mainForm->ui->viewfinder->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        QPixmap pixmap = QPixmap::fromImage(scaledImage);
+        mainForm->ui->gridView->setPixmap(pixmap);
     }
 }
