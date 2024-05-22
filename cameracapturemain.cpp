@@ -271,16 +271,3 @@ void CameraCaptureMain::clearTimer() {
     ui->buttonClearTimer->setDisabled(true);
 }
 
-void CameraCaptureMain::setGrid(int index) {
-    ui->gridView->setAutoFillBackground(false);
-    ui->gridView->setWindowOpacity(0);
-    QWidget *widget = new QWidget(ui->preview);
-    QScopedPointer<QStackedLayout> stackedLayout(new QStackedLayout());
-    stackedLayout->addWidget(ui->viewfinder);
-    stackedLayout->setCurrentWidget(ui->gridView);
-    stackedLayout->setStackingMode(QStackedLayout::StackAll);
-    widget->setLayout(stackedLayout.data());
-    ui->preview->insertWidget(2, widget);
-    ui->preview->setCurrentIndex(2);
-    dynamic_cast<CameraCapture*>(cameraCapture)->setGrid(index);
-}

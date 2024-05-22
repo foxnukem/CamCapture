@@ -28,7 +28,6 @@ public:
     void setMuted(bool);
     void setTimerValue(int newValue);
     void clearTimer();
-    void setGrid(int index);
 
     QScopedPointer<QImageCapture> m_imageCapture;
     QScopedPointer<QAudioInput> m_audioInput;

@@ -474,90 +474,6 @@
          </property>
         </spacer>
        </item>
-       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-        <widget class="QGroupBox" name="groupGridSelection">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>213</height>
-          </size>
-         </property>
-         <property name="title">
-          <string>Сітка</string>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
-           <widget class="QComboBox" name="comboBoxGridSelection">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>160</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <item>
-             <property name="text">
-              <string>Не обрано</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Сітка 3х3</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Золотий переріз</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Квадрат</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Сітка 2х2</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <spacer name="spacer_13">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
     </item>
@@ -834,22 +750,6 @@
     <hint type="sourcelabel">
      <x>340</x>
      <y>615</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>434</x>
-     <y>342</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>comboBoxGridSelection</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>CameraCaptureMain</receiver>
-   <slot>setGrid(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>690</x>
-     <y>599</y>
     </hint>
     <hint type="destinationlabel">
      <x>434</x>

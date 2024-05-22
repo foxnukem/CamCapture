@@ -48,8 +48,6 @@ public slots:
     void setTimerValue();
     void clearTimer();
 
-    void setGrid(int index);
-
     void updateCameraDevice(QAction *action);
     void updateCameraActive(bool active);
     void updateAudioInputDevice(QAction *action);

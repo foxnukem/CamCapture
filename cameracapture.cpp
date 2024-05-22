@@ -120,24 +120,3 @@ void CameraCapture::stopCamera() {
     m_camera->stop();
 }
 
-void CameraCapture::setGrid(int index) {
-    if (index == 0) {
-        mainForm->ui->gridView->setPixmap(QPixmap());
-    } else if (index == 1) {
-        QImage scaledImage = QImage(":/images/grid33.svg").scaled(mainForm->ui->viewfinder->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        QPixmap pixmap = QPixmap::fromImage(scaledImage);
-        mainForm->ui->gridView->setPixmap(pixmap);
-    } else if (index == 2) {
-        QImage scaledImage = QImage(":/images/goldenratio.svg").scaled(mainForm->ui->viewfinder->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        QPixmap pixmap = QPixmap::fromImage(scaledImage);
-        mainForm->ui->gridView->setPixmap(pixmap);
-    } else if (index == 3) {
-        QImage scaledImage = QImage(":/images/square.svg").scaled(mainForm->ui->viewfinder->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        QPixmap pixmap = QPixmap::fromImage(scaledImage);
-        mainForm->ui->gridView->setPixmap(pixmap);
-    } else if (index == 4) {
-        QImage scaledImage = QImage(":/images/crosshair.svg").scaled(mainForm->ui->viewfinder->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        QPixmap pixmap = QPixmap::fromImage(scaledImage);
-        mainForm->ui->gridView->setPixmap(pixmap);
-    }
-}
